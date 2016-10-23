@@ -43,7 +43,8 @@ gulp.task('jscompile', function() {
         //only uglify if gulp is run with '--type production'
         .pipe(gutil.env.type === 'production' ? uglify() : gutil.noop()) 
         .pipe(sourcemaps.write('./'))
-		.pipe(gulp.dest('./dist/js'));
+        .pipe(gulp.dest('./dist/js'))
+        .pipe(gulp.dest('./public/js'));
 });
 
 gulp.task('js', ['jshint','jscompile']);
@@ -78,14 +79,30 @@ gulp.task('serve', ['build'], function() {
     gulp.watch('./dist/**/*.{js,html}').on('change', reload);
 });
 
+// Brackets liver edit
+gulp.task('brackets', ['build'], function() {
+  browserSync.init({
+    server: {
+      baseDir: './'
+    },
+    open: true,
+    /* Hide the notification. It gets annoying */
+    notify: {
+      styles: ['opacity: 0', 'position: absolute']
+    }
+  });
+  gulp.watch('./public/css/**/*.{css,sass}', ['sass']);
+  gulp.watch('./public/**/*.js',['js']);
+  gulp.watch('./public/*.html',['html']);
+  gulp.watch('./dist/**/*.{js,html}').on('change', reload);
+});
+
 /**
  * Push build to github-pages
  */
 gulp.task('deploy', function () {
   return gulp.src("./dist/**/*")
-    .pipe(deploy({
-        remoteUrl: 'https://github.com/chookie/chookie.github.io.git' 
-    }))
+    .pipe(deploy())
 });
 
 gulp.task('default', ['serve']);

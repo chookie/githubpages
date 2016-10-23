@@ -1,0 +1,6 @@
+{
+    "node": true,    // Stop warning about strict not function form
+    "browser": true,   // Stop warning about document element not found
+    "globals": "display",  // Global functions
+    "esversion": 6
+ }
